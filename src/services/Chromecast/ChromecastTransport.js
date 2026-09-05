@@ -1,175 +1,125 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const EventEmitter = require('eventemitter3');
-const hat = require('hat');
-
-const MESSAGE_NAMESPACE = 'urn:x-cast:com.stremio';
-const CHUNK_SIZE = 20000;
-
-let castAPIAvailable = null;
-const castAPIEvents = new EventEmitter();
-window['__onGCastApiAvailable'] = function(available) {
-    delete window['__onGCastApiAvailable'];
-    castAPIAvailable = !!available;
-    castAPIEvents.emit('availabilityChanged');
-};
-
-const initialize = () => {
-    return new Promise((resolve, reject) => {
-        function onCastAPIAvailabilityChanged() {
-            castAPIEvents.off('availabilityChanged', onCastAPIAvailabilityChanged);
-            if (castAPIAvailable) {
-                resolve();
-            } else {
-                reject(new Error('window.cast api not available', { cause: 'castAPIAvailable is null.' }));
-            }
-        }
-        if (castAPIAvailable !== null) {
-            onCastAPIAvailabilityChanged();
-        } else {
-            castAPIEvents.on('availabilityChanged', onCastAPIAvailabilityChanged);
-        }
-    });
-};
 
 function ChromecastTransport() {
-    const events = new EventEmitter();
-    const messages = {};
+    EventEmitter.call(this);
 
-    initialize()
-        .then(() => {
-            cast.framework.CastContext.getInstance().addEventListener(
-                cast.framework.CastContextEventType.CAST_STATE_CHANGED,
-                onCastStateChanged
-            );
-            cast.framework.CastContext.getInstance().addEventListener(
-                cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
-                onSesstionStateChanged
-            );
-        })
-        .then(() => {
-            try {
-                events.emit('init');
-            } catch (error) {
-                console.error('ChromecastTransport', error);
-            }
-        })
-        .catch((error) => {
-            events.emit('init-error', error);
-        });
+    let initialized = false;
 
-    function onMessage(_, message) {
+    const onInit = () => {
+        if (initialized) return;
         try {
-            const { id, chunk, index, length } = JSON.parse(message);
-            messages[id] = messages[id] || [];
-            messages[id][index] = chunk;
-            if (Object.keys(messages[id]).length === length) {
-                const parsedMessage = JSON.parse(messages[id].join(''));
-                delete messages[id];
-                events.emit('message', parsedMessage);
+            const context = window.cast && window.cast.framework ? window.cast.framework.CastContext.getInstance() : null;
+            if (!context) {
+                this.emit('init-error', new Error('window.cast api not available'));
+                return;
             }
+
+            initialized = true;
+
+            context.addEventListener(
+                window.cast.framework.CastContextEventType.CAST_STATE_CHANGED,
+                (event) => {
+                    this.emit(window.cast.framework.CastContextEventType.CAST_STATE_CHANGED, event);
+                    this.emit('stateChanged', event);
+                }
+            );
+
+            context.addEventListener(
+                window.cast.framework.CastContextEventType.SESSION_STATE_CHANGED,
+                (event) => {
+                    const session = context.getCurrentSession();
+                    if (session && event.sessionState === window.cast.framework.SessionState.SESSION_STARTED) {
+                        try {
+                            session.addMessageListener('urn:x-cast:com.stremio', (namespace, message) => {
+                                try {
+                                    const parsed = typeof message === 'string' ? JSON.parse(message) : message;
+                                    this.emit('message', parsed);
+                                } catch (e) {
+                                    this.emit('message-error', e);
+                                }
+                            });
+                        } catch (err) {
+                            this.emit('message-error', err);
+                        }
+                    }
+                    this.emit(window.cast.framework.CastContextEventType.SESSION_STATE_CHANGED, event);
+                }
+            );
+
+            this.emit('init');
         } catch (error) {
-            events.emit('message-error', error);
+            this.emit('init-error', error);
         }
-    }
-    function onApplicationStatusChanged(event) {
-        events.emit(cast.framework.CastSession.APPLICATION_STATUS_CHANGED, event);
-    }
-    function onApplicationMetadataChanged(event) {
-        events.emit(cast.framework.CastSession.APPLICATION_METADATA_CHANGED, event);
-    }
-    function onActiveInputStateChanged(event) {
-        events.emit(cast.framework.CastSession.ACTIVE_INPUT_STATE_CHANGED, event);
-    }
-    function onVolumeChanged(event) {
-        events.emit(cast.framework.CastSession.VOLUME_CHANGED, event);
-    }
-    function onMediaSessionChanged(event) {
-        events.emit(cast.framework.CastSession.MEDIA_SESSION, event);
-    }
-    function onCastStateChanged(event) {
-        events.emit(cast.framework.CastContextEventType.CAST_STATE_CHANGED, event);
-    }
-    function onSesstionStateChanged(event) {
-        events.emit(cast.framework.CastContextEventType.SESSION_STATE_CHANGED, event);
-        switch (event.sessionState) {
-            case cast.framework.SessionState.SESSION_STARTED: {
-                event.session.addMessageListener(MESSAGE_NAMESPACE, onMessage);
-                event.session.addEventListener(cast.framework.CastSession.APPLICATION_STATUS_CHANGED, onApplicationStatusChanged);
-                event.session.addEventListener(cast.framework.CastSession.APPLICATION_METADATA_CHANGED, onApplicationMetadataChanged);
-                event.session.addEventListener(cast.framework.CastSession.ACTIVE_INPUT_STATE_CHANGED, onActiveInputStateChanged);
-                event.session.addEventListener(cast.framework.CastSession.VOLUME_CHANGED, onVolumeChanged);
-                event.session.addEventListener(cast.framework.CastSession.MEDIA_SESSION, onMediaSessionChanged);
-                break;
-            }
-            case cast.framework.SessionState.SESSION_ENDED: {
-                event.session.removeMessageListener(MESSAGE_NAMESPACE, onMessage);
-                event.session.removeEventListener(cast.framework.CastSession.APPLICATION_STATUS_CHANGED, onApplicationStatusChanged);
-                event.session.removeEventListener(cast.framework.CastSession.APPLICATION_METADATA_CHANGED, onApplicationMetadataChanged);
-                event.session.removeEventListener(cast.framework.CastSession.ACTIVE_INPUT_STATE_CHANGED, onActiveInputStateChanged);
-                event.session.removeEventListener(cast.framework.CastSession.VOLUME_CHANGED, onVolumeChanged);
-                event.session.removeEventListener(cast.framework.CastSession.MEDIA_SESSION, onMediaSessionChanged);
-                break;
-            }
-        }
-    }
+    };
 
-    this.on = function(name, listener) {
-        events.on(name, listener);
-    };
-    this.off = function(name, listener) {
-        events.off(name, listener);
-    };
-    this.removeAllListeners = function() {
-        events.removeAllListeners();
-    };
-    this.getCastState = function() {
-        return cast.framework.CastContext.getInstance().getCastState();
-    };
-    this.getSessionState = function() {
-        return cast.framework.CastContext.getInstance().getSessionState();
-    };
-    this.getCastDevice = function() {
-        const session = cast.framework.CastContext.getInstance().getCurrentSession();
-        if (session !== null) {
-            return session.getCastDevice();
-        }
-
-        return null;
-    };
-    this.setOptions = function(options) {
-        cast.framework.CastContext.getInstance().setOptions(options);
-    };
-    this.requestSession = function() {
-        return cast.framework.CastContext.getInstance().requestSession();
-    };
-    this.endCurrentSession = function(stopCasting) {
-        cast.framework.CastContext.getInstance().endCurrentSession(stopCasting);
-    };
-    this.sendMessage = function(message) {
-        const castSession = cast.framework.CastContext.getInstance().getCurrentSession();
-        if (castSession !== null) {
-            const serializedMessage = JSON.stringify(message);
-            const chunksCount = Math.ceil(serializedMessage.length / CHUNK_SIZE);
-            const chunks = [];
-            for (let i = 0; i < chunksCount; i++) {
-                const start = i * CHUNK_SIZE;
-                const chunk = serializedMessage.slice(start, start + CHUNK_SIZE);
-                chunks.push(chunk);
+    if (window.cast && window.cast.framework) {
+        setTimeout(onInit, 0);
+    } else {
+        const previousOnGCastApiAvailable = window.__onGCastApiAvailable;
+        window.__onGCastApiAvailable = (isAvailable) => {
+            if (typeof previousOnGCastApiAvailable === 'function') {
+                previousOnGCastApiAvailable(isAvailable);
             }
-            const id = hat();
-            return Promise.all(chunks.map((chunk, index) => {
-                return castSession.sendMessage(MESSAGE_NAMESPACE, {
-                    id,
-                    chunk,
-                    index,
-                    length: chunks.length
-                });
-            }));
-        } else {
-            return Promise.reject(new Error('Session not started', { cause: 'castSession is null.' }));
-        }
-    };
+            if (isAvailable) {
+                onInit();
+            } else {
+                this.emit('init-error', new Error('window.cast api not available'));
+            }
+        };
+
+        setTimeout(() => {
+            if (!initialized && (!window.cast || !window.cast.framework)) {
+                this.emit('init-error', new Error('window.cast api not available'));
+            }
+        }, 5000);
+    }
 }
+
+ChromecastTransport.prototype = Object.create(EventEmitter.prototype);
+ChromecastTransport.prototype.constructor = ChromecastTransport;
+
+ChromecastTransport.prototype.setOptions = function(options) {
+    if (window.cast && window.cast.framework) {
+        window.cast.framework.CastContext.getInstance().setOptions(options);
+    }
+};
+
+ChromecastTransport.prototype.getCastState = function() {
+    if (window.cast && window.cast.framework) {
+        return window.cast.framework.CastContext.getInstance().getCastState();
+    }
+    return 'NO_DEVICES_AVAILABLE';
+};
+
+ChromecastTransport.prototype.getCastDevice = function() {
+    try {
+        const session = window.cast && window.cast.framework ? window.cast.framework.CastContext.getInstance().getCurrentSession() : null;
+        return session ? session.getCastDevice() : null;
+    } catch {
+        return null;
+    }
+};
+
+ChromecastTransport.prototype.requestSession = function() {
+    if (window.cast && window.cast.framework) {
+        return window.cast.framework.CastContext.getInstance().requestSession();
+    }
+    return Promise.reject(new Error('Cast context not available'));
+};
+
+ChromecastTransport.prototype.sendMessage = function(message) {
+    try {
+        const session = window.cast && window.cast.framework ? window.cast.framework.CastContext.getInstance().getCurrentSession() : null;
+        if (session) {
+            const payload = typeof message === 'string' ? message : JSON.stringify(message);
+            return session.sendMessage('urn:x-cast:com.stremio', payload);
+        }
+        return Promise.reject(new Error('No active cast session'));
+    } catch (err) {
+        return Promise.reject(err);
+    }
+};
 
 module.exports = ChromecastTransport;

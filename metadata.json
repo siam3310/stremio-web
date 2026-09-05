@@ -1,0 +1,6 @@
+{
+  "name": "Stremio",
+  "description": "Freedom to stream - all video content in one place",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

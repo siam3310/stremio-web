@@ -12,7 +12,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const packageJson = require('./package.json');
 
-const COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
+let COMMIT_HASH = 'v' + (packageJson.version || '5.0.0').replace(/[^a-zA-Z0-9]/g, '');
+try {
+    COMMIT_HASH = execSync('git rev-parse HEAD').toString().trim();
+} catch (e) {
+    // Fallback when .git is not present
+}
 
 const THREAD_LOADER = {
     loader: 'thread-loader',
@@ -41,7 +46,7 @@ module.exports = (env, argv) => ({
         worker: './node_modules/@stremio/stremio-core-web/worker.js'
     },
     output: {
-        path: path.join(__dirname, 'build'),
+        path: path.join(__dirname, 'dist'),
         filename: `${COMMIT_HASH}/scripts/[name].js`,
         clean: true,
     },
@@ -183,10 +188,16 @@ module.exports = (env, argv) => ({
     },
     devServer: {
         host: '0.0.0.0',
+        port: 3000,
+        allowedHosts: 'all',
         static: false,
         hot: false,
-        server: 'https',
-        liveReload: false
+        liveReload: false,
+        historyApiFallback: true,
+        client: false,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+        },
     },
     optimization: {
         minimize: true,

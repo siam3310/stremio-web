@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { usePlatform } from 'stremio/common';
@@ -8,19 +8,14 @@ import styles from './Menu.less';
 
 type Props = {
     selected: string,
-    streamingServer: StreamingServer,
+    streamingServer?: StreamingServer,
     onSelect: (event: React.MouseEvent<HTMLDivElement>) => void,
 };
 
-const Menu = ({ selected, streamingServer, onSelect }: Props) => {
+const Menu = ({ selected, onSelect }: Props) => {
     const { t } = useTranslation();
     const { shell } = usePlatform();
     const platform = usePlatform();
-
-    const settings = useMemo(() => (
-        streamingServer?.settings?.type === 'Ready' ?
-            streamingServer.settings.content as StreamingServerSettings : null
-    ), [streamingServer?.settings]);
 
     return (
         <div className={styles['menu']}>
@@ -33,9 +28,6 @@ const Menu = ({ selected, streamingServer, onSelect }: Props) => {
             <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.PLAYER })} title={t('SETTINGS_NAV_PLAYER')} data-section={SECTIONS.PLAYER} onClick={onSelect}>
                 { t('SETTINGS_NAV_PLAYER') }
             </Button>
-            <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.STREAMING })} title={t('SETTINGS_NAV_STREAMING')} data-section={SECTIONS.STREAMING} onClick={onSelect}>
-                { t('SETTINGS_NAV_STREAMING') }
-            </Button>
             { !platform.isMobile && <Button className={classNames(styles['button'], { [styles['selected']]: selected === SECTIONS.SHORTCUTS })} title={t('SETTINGS_NAV_SHORTCUTS')} data-section={SECTIONS.SHORTCUTS} onClick={onSelect}>
                 { t('SETTINGS_NAV_SHORTCUTS') }
             </Button> }
@@ -47,12 +39,6 @@ const Menu = ({ selected, streamingServer, onSelect }: Props) => {
             <div className={styles['version-info-label']} title={process.env.COMMIT_HASH}>
                 {t('SETTINGS_BUILD_VERSION')}: {process.env.COMMIT_HASH}
             </div>
-            {
-                settings?.serverVersion &&
-                    <div className={styles['version-info-label']} title={settings.serverVersion}>
-                        {t('SETTINGS_SERVER_VERSION')}: {settings.serverVersion}
-                    </div>
-            }
             {
                 typeof shell.state.version === 'string' &&
                     <div className={styles['version-info-label']} title={shell.state.version}>

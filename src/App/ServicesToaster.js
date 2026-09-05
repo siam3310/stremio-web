@@ -43,6 +43,20 @@ const ServicesToaster = () => {
             if (source.event === 'LibrarySyncWithAPIPlanned' && source.args.uid === null) return;
             if (error.type === 'Other' && error.code === 3 && source.event === 'AddonInstalled' && source.args.transport_url.startsWith('https://www.strem.io/trakt/addon')) return;
 
+            // Purge Streaming Server, Torrent, and Debrid warning toasts
+            const eventStr = String(source.event || '').toLowerCase();
+            const msgStr = String(error.message || '').toLowerCase();
+            if (
+                eventStr.includes('streamingserver') ||
+                eventStr.includes('torrent') ||
+                msgStr.includes('streaming server') ||
+                msgStr.includes('torrent') ||
+                msgStr.includes('debrid') ||
+                msgStr.includes('peer')
+            ) {
+                return;
+            }
+
             toast.show({
                 type: 'error',
                 title: source.event,

@@ -4,12 +4,12 @@
 
 const INDEX_CACHE = 7200;
 const ASSETS_CACHE = 2629744;
-const HTTP_PORT = 8080;
+const HTTP_PORT = process.env.PORT || 3000;
 
 const express = require('express');
 const path = require('path');
 
-const build_path = path.resolve(__dirname, 'build');
+const build_path = path.resolve(__dirname, 'dist');
 const index_path = path.join(build_path, 'index.html');
 
 express().use(express.static(build_path, {

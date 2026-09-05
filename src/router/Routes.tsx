@@ -53,17 +53,10 @@ const Routes = () => {
     const [views, setViews] = React.useState<(CachedView | null)[]>(() => getNextViews([], location));
 
     /**
-     * Replaced onRouteChange with following useEffect:
+     * Bypass intro/login routes completely; ensure user stays in the main application:
      */
     React.useEffect(() => {
-        // Handle redirect if user logs out
-        if (previousAuthRef.current !== null && profile.auth === null) {
-            previousAuthRef.current = profile.auth;
-            navigate('/intro', { replace: true });
-        }
-
-        // Handle redirect if user is logged in on intro screen
-        if (profile.auth !== null && location.pathname === '/intro') {
+        if (location.pathname === '/intro' || location.pathname === '/login' || location.pathname === '/signup') {
             navigate('/', { replace: true });
         }
         previousAuthRef.current = profile.auth;

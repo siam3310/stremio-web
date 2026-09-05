@@ -96,10 +96,6 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
         return deepLinks?.externalPlayer?.download;
     }, [deepLinks]);
 
-    const magnetLink = React.useMemo(() => {
-        return deepLinks?.externalPlayer?.magnet;
-    }, [deepLinks]);
-
     const markVideoAsWatched = React.useCallback(() => {
         if (typeof videoId === 'string') {
             core.transport.dispatch({
@@ -130,28 +126,6 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
             props.onClick(event);
         }
     }, [props.onClick, profile.settings, markVideoAsWatched]);
-
-    const copyMagnetLink = React.useCallback((event) => {
-        event.preventDefault();
-        closeMenu();
-        if (magnetLink) {
-            navigator.clipboard.writeText(magnetLink)
-                .then(() => {
-                    toast.show({
-                        type: 'success',
-                        title: t('PLAYER_COPY_MAGNET_LINK_SUCCESS'),
-                        timeout: 4000
-                    });
-                })
-                .catch(() => {
-                    toast.show({
-                        type: 'error',
-                        title: t('PLAYER_COPY_MAGNET_LINK_ERROR'),
-                        timeout: 4000,
-                    });
-                });
-        }
-    }, [magnetLink]);
 
     const copyDownloadLink = React.useCallback((event) => {
         event.preventDefault();
@@ -252,13 +226,6 @@ const Stream = ({ className, videoId, videoReleased, addonName, name, descriptio
                         <Button className={styles['context-menu-option-container']} title={t('CTX_COPY_STREAM_LINK')} onClick={copyStreamLink}>
                             <Icon className={styles['menu-icon']} name={'link'} />
                             <div className={styles['context-menu-option-label']}>{t('CTX_COPY_STREAM_LINK')}</div>
-                        </Button>
-                }
-                {
-                    magnetLink &&
-                        <Button className={styles['context-menu-option-container']} title={t('CTX_COPY_MAGNET_LINK')} onClick={copyMagnetLink}>
-                            <Icon className={styles['menu-icon']} name={'magnet-link'} />
-                            <div className={styles['context-menu-option-label']}>{t('CTX_COPY_MAGNET_LINK')}</div>
                         </Button>
                 }
                 {

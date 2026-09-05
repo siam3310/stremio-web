@@ -1,7 +1,6 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 
 const React = require('react');
-const { useNavigate } = require('react-router');
 const PropTypes = require('prop-types');
 const classnames = require('classnames');
 const { useTranslation } = require('react-i18next');
@@ -14,25 +13,17 @@ const usePWA = require('stremio/common/usePWA');
 const { default: usePlayUrl } = require('stremio/common/usePlayUrl');
 const useToast = require('stremio/common/Toast/useToast');
 const { withCoreSuspender } = require('stremio/common/CoreSuspender');
-const useStreamingServer = require('stremio/common/useStreamingServer');
 const styles = require('./styles');
 
 const NavMenuContent = ({ onClick }) => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const core = useCore();
     const profile = useProfile();
-    const streamingServer = useStreamingServer();
     const { handlePlayUrl } = usePlayUrl();
     const toast = useToast();
     const [fullscreen, requestFullscreen, exitFullscreen, , supported] = useFullscreen();
     const [, isAndroidPWA] = usePWA();
-    const streamingServerWarningDismissed = React.useMemo(() => {
-        return streamingServer.settings !== null && streamingServer.settings.type === 'Ready' || (
-            !isNaN(profile.settings.streamingServerWarningDismissed.getTime()) &&
-            profile.settings.streamingServerWarningDismissed.getTime() > Date.now()
-        );
-    }, [profile.settings, streamingServer.settings]);
+    const streamingServerWarningDismissed = true;
     const logoutButtonOnClick = React.useCallback(() => {
         core.transport.dispatch({
             action: 'Ctx',
@@ -40,6 +31,7 @@ const NavMenuContent = ({ onClick }) => {
                 action: 'Logout'
             }
         });
+        window.location.reload();
     }, []);
     const onPlayMagnetLinkClick = React.useCallback(async () => {
         try {
@@ -48,7 +40,7 @@ const NavMenuContent = ({ onClick }) => {
             if (!handled) {
                 toast.show({
                     type: 'error',
-                    title: 'Clipboard does not contain a valid URL or magnet link.',
+                    title: 'Clipboard does not contain a valid HTTP/HTTPS or HLS stream URL.',
                     timeout: 5000
                 });
             }
@@ -57,10 +49,8 @@ const NavMenuContent = ({ onClick }) => {
         }
     }, [handlePlayUrl]);
     const handleAuth = React.useCallback(() => {
-        return profile.auth !== null
-            ? logoutButtonOnClick()
-            : navigate('/intro');
-    }, [profile.auth, logoutButtonOnClick, navigate]);
+        return logoutButtonOnClick();
+    }, [logoutButtonOnClick]);
 
     return (
         <div className={classnames(styles['nav-menu-container'], 'animation-fade-in', { [styles['with-warning']]: !streamingServerWarningDismissed } )} onClick={onClick}>
@@ -106,9 +96,9 @@ const NavMenuContent = ({ onClick }) => {
                     <Icon className={styles['icon']} name={'addons-outline'} />
                     <div className={styles['nav-menu-option-label']}>{ t('ADDONS') }</div>
                 </Button>
-                <Button className={styles['nav-menu-option-container']} title={ t('PLAY_URL_MAGNET_LINK') } onClick={onPlayMagnetLinkClick}>
-                    <Icon className={styles['icon']} name={'magnet-link'} />
-                    <div className={styles['nav-menu-option-label']}>{ t('PLAY_URL_MAGNET_LINK') }</div>
+                <Button className={styles['nav-menu-option-container']} title={'Play Stream URL'} onClick={onPlayMagnetLinkClick}>
+                    <Icon className={styles['icon']} name={'link'} />
+                    <div className={styles['nav-menu-option-label']}>{'Play Stream URL'}</div>
                 </Button>
                 <Button className={styles['nav-menu-option-container']} title={ t('HELP_FEEDBACK') } href={'https://stremio.zendesk.com/'} target={'_blank'}>
                     <Icon className={styles['icon']} name={'help'} />

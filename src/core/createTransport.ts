@@ -8,8 +8,8 @@ const createTransport = (): CoreTransport => {
         return bridge.call(['init'], [args]);
     };
 
-    const getState = (model: string): Promise<object> => {
-        return bridge.call(['getState'], [model]);
+    const getState = async (model: string): Promise<object> => {
+        return (await bridge.call(['getState'], [model])) as any;
     };
 
     const dispatch = (action: DispatchAction, model?: string): Promise<void> => {

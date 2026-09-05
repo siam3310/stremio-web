@@ -49,9 +49,18 @@ const StreamsList = ({ className, video, type, onEpisodeSearch, ...props }) => {
         return props.streams
             .filter((streams) => streams.content.type === 'Ready')
             .reduce((streamsByAddon, streams) => {
-                streamsByAddon[streams.addon.transportUrl] = {
-                    addon: streams.addon,
-                    streams: streams.content.content.map((stream) => ({
+                const playableStreams = streams.content.content
+                    .filter((stream) => {
+                        // Enforce direct playback: hide pure torrents and magnet streams requiring P2P engine
+                        if (stream.infoHash && !stream.url) {
+                            return false;
+                        }
+                        if (stream.deepLinks?.externalPlayer?.magnet && !stream.url && !stream.deepLinks?.externalPlayer?.streaming) {
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map((stream) => ({
                         ...stream,
                         onClick: () => {
                             core.transport.analytics({
@@ -62,8 +71,14 @@ const StreamsList = ({ className, video, type, onEpisodeSearch, ...props }) => {
                             });
                         },
                         addonName: streams.addon.manifest.name
-                    }))
-                };
+                    }));
+
+                if (playableStreams.length > 0) {
+                    streamsByAddon[streams.addon.transportUrl] = {
+                        addon: streams.addon,
+                        streams: playableStreams
+                    };
+                }
 
                 return streamsByAddon;
             }, {});

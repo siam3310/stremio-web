@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router';
 import magnet from 'magnet-uri';
 import { useCore } from 'stremio/core';
 import useToast from 'stremio/common/Toast/useToast';
-import useTorrent from 'stremio/common/useTorrent';
-import useStreamingServer from 'stremio/common/useStreamingServer';
 
 const HTTP_REGEX = /^https?:\/\/.+/i;
 
@@ -12,8 +10,6 @@ const usePlayUrl = () => {
     const navigate = useNavigate();
     const core = useCore();
     const toast = useToast();
-    const { createTorrentFromMagnet } = useTorrent();
-    const streamingServer = useStreamingServer();
 
     const handlePlayUrl = useCallback(async (text: string): Promise<boolean> => {
         if (!text || !text.trim()) return false;
@@ -48,22 +44,16 @@ const usePlayUrl = () => {
 
         const parsed = magnet.decode(trimmed);
         if (parsed && typeof parsed.infoHash === 'string') {
-            const serverReady = streamingServer.settings !== null
-                && streamingServer.settings.type === 'Ready';
-            if (!serverReady) {
-                toast.show({
-                    type: 'error',
-                    title: 'Streaming server is not available. Cannot play magnet links.',
-                    timeout: 5000
-                });
-                return false;
-            }
-            createTorrentFromMagnet(trimmed);
-            return true;
+            toast.show({
+                type: 'error',
+                title: 'P2P / Magnet streams are not supported in direct streaming mode. Please provide direct HTTP(S), MP4, or HLS stream URLs.',
+                timeout: 5000
+            });
+            return false;
         }
 
         return false;
-    }, [streamingServer.settings, createTorrentFromMagnet]);
+    }, []);
 
     return { handlePlayUrl };
 };

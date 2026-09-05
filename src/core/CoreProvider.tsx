@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import CoreContext from './CoreContext';
 import createTransport from './createTransport';
 import Error from './Error';
+import { AUTH_KEY } from './authInjection';
 
 const transport = createTransport();
 
@@ -66,19 +67,69 @@ const Core = (props: Props) => {
             }
         };
 
-        transport
-            .init(props.appInfo)
-            .then(() => {
+        const initCore = async () => {
+            try {
+                await transport.init(props.appInfo);
                 window.core = transport;
                 window.onCoreEvent = onCoreEvent;
                 setReady(true);
                 setError(null);
-            })
-            .catch((e: Error) => {
+
+                try {
+                    const ctx = (await transport.getState('ctx')) as any;
+                    if (!ctx?.profile?.auth?.key && AUTH_KEY) {
+                        await transport.dispatch({
+                            action: 'Ctx',
+                            args: {
+                                action: 'Authenticate',
+                                args: {
+                                    type: 'LoginWithToken',
+                                    token: AUTH_KEY,
+                                },
+                            },
+                        });
+                    }
+                } catch (authError) {
+                    console.warn('Auto-login error:', authError);
+                }
+            } catch (e: any) {
                 console.error('Failed to initialize core:', e);
+                const msg = String(e?.message || '');
+                if (msg.includes('Serialization error') || msg.includes('missing field')) {
+                    try {
+                        window.localStorage.removeItem('profile');
+                        await transport.init(props.appInfo);
+                        window.core = transport;
+                        window.onCoreEvent = onCoreEvent;
+                        setReady(true);
+                        setError(null);
+
+                        if (AUTH_KEY) {
+                            await transport.dispatch({
+                                action: 'Ctx',
+                                args: {
+                                    action: 'Authenticate',
+                                    args: {
+                                        type: 'LoginWithToken',
+                                        token: AUTH_KEY,
+                                    },
+                                },
+                            });
+                        }
+                        return;
+                    } catch (retryErr: any) {
+                        console.error('Core initialization retry failed:', retryErr);
+                        setReady(false);
+                        setError(retryErr);
+                        return;
+                    }
+                }
                 setReady(false);
                 setError(e);
-            });
+            }
+        };
+
+        initCore();
 
         return () => {
             stateListeners.current = [];

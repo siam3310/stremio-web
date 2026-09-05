@@ -2,7 +2,6 @@
 
 const React = require('react');
 const { useParams, useNavigate } = require('react-router');
-const { useSearchParams } = require('react-router-dom');
 const classnames = require('classnames');
 const debounce = require('lodash.debounce');
 const langs = require('langs');
@@ -55,15 +54,11 @@ const Player = () => {
         id,
         videoId
     }), [stream, streamTransportUrl, metaTransportUrl, type, id, videoId]);
-    const [queryParams] = useSearchParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
     const services = useServices();
     const core = useCore();
     const gamepad = useGamepad();
-    const forceTranscoding = React.useMemo(() => {
-        return queryParams.has('forceTranscoding');
-    }, [queryParams]);
     const profile = useProfile();
     const [player, videoParamsChanged, streamStateChanged, subtitlePreferenceChanged, videoScaleChanged, timeChanged, seek, pausedChanged, ended, nextVideo] = usePlayer(urlParams);
     const [settings] = useSettings();
@@ -503,7 +498,20 @@ const Player = () => {
         cancelKeyboardSeek();
         video.unload();
 
-        if (player.selected && player.stream?.type === 'Ready' && streamingServer.settings?.type !== 'Loading') {
+        if (player.selected && player.stream?.type === 'Ready') {
+            const streamContent = player.stream.content;
+
+            // Fallback for unsupported torrent/magnet streams in direct streaming client
+            if ((streamContent.infoHash && !streamContent.url) || (!streamContent.url && !streamContent.ytId && !streamContent.externalUrl)) {
+                toast.show({
+                    type: 'error',
+                    title: 'P2P / Magnet streams are not supported in direct streaming mode. Please select a direct HTTP/HLS stream.',
+                    timeout: 5000
+                });
+                navigate(-1);
+                return;
+            }
+
             video.load({
                 stream: {
                     ...player.stream.content,
@@ -517,27 +525,21 @@ const Player = () => {
                     player.libraryItem.state.timeOffset
                     :
                     0,
-                forceTranscoding: forceTranscoding || casting,
+                forceTranscoding: false,
                 maxAudioChannels: settings.surroundSound ? 32 : 2,
                 hardwareDecoding: settings.hardwareDecoding,
                 assSubtitlesStyling: settings.assSubtitlesStyling,
                 gpuVideoProcessing: settings.gpuVideoProcessing && platform.shell.capabilities.gpuVideoProcessing,
                 videoMode: settings.videoMode,
                 platform: platform.name,
-                streamingServerURL: streamingServer.baseUrl ?
-                    casting ?
-                        streamingServer.baseUrl
-                        :
-                        streamingServer.selected.transportUrl
-                    :
-                    null,
+                streamingServerURL: null,
                 seriesInfo: player.seriesInfo,
             }, {
                 chromecastTransport: services.chromecast.active ? services.chromecast.transport : null,
                 shellTransport: platform.shell.active ? platform.shell : null,
             });
         }
-    }, [streamingServer.baseUrl, player.selected, player.stream, streamSubtitles, forceTranscoding, casting, cancelKeyboardSeek]);
+    }, [player.selected, player.stream, streamSubtitles, cancelKeyboardSeek]);
 
     React.useEffect(() => {
         !seeking && timeChanged(video.state.time, video.state.duration, video.state.manifest?.name);
@@ -774,10 +776,7 @@ const Player = () => {
         }
     }, [video.state.playbackSpeed, onPlaybackSpeedChanged], !menusOpen);
 
-    const selectedStream = player.selected?.stream;
-    const statisticsMenuAvailable = streamingServer?.statistics?.type !== 'Err'
-        && typeof selectedStream?.infoHash === 'string'
-        && typeof selectedStream?.fileIdx === 'number';
+    const statisticsMenuAvailable = false;
 
     const finishDetailsHold = React.useCallback(() => {
         const hold = detailsHold.current;
