@@ -96,9 +96,9 @@ const NavMenuContent = ({ onClick }) => {
                     <Icon className={styles['icon']} name={'addons-outline'} />
                     <div className={styles['nav-menu-option-label']}>{ t('ADDONS') }</div>
                 </Button>
-                <Button className={styles['nav-menu-option-container']} title={'Play Stream URL'} onClick={onPlayMagnetLinkClick}>
+                <Button className={styles['nav-menu-option-container']} title={ t('PLAY_STREAM_URL') } onClick={onPlayMagnetLinkClick}>
                     <Icon className={styles['icon']} name={'link'} />
-                    <div className={styles['nav-menu-option-label']}>{'Play Stream URL'}</div>
+                    <div className={styles['nav-menu-option-label']}>{ t('PLAY_STREAM_URL') }</div>
                 </Button>
                 <Button className={styles['nav-menu-option-container']} title={ t('HELP_FEEDBACK') } href={'https://stremio.zendesk.com/'} target={'_blank'}>
                     <Icon className={styles['icon']} name={'help'} />
