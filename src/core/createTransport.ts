@@ -1,5 +1,10 @@
 import Bridge from '@stremio/stremio-core-web/bridge';
 
+// Ensure window.onCoreEvent exists so initial messages from worker during boot do not fail
+if (typeof window !== 'undefined' && !(window as any).onCoreEvent) {
+    (window as any).onCoreEvent = () => undefined;
+}
+
 const worker = new Worker(`${process.env.COMMIT_HASH}/scripts/worker.js`);
 const bridge = new Bridge(window, worker);
 

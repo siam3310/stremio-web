@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import CoreContext from './CoreContext';
 import createTransport from './createTransport';
 import Error from './Error';
-import { AUTH_KEY } from './authInjection';
 
 const transport = createTransport();
 
@@ -14,7 +13,7 @@ type Props = {
 const Core = (props: Props) => {
     const initialized = useRef(false);
     const [ready, setReady] = useState(false);
-    const [error, setError] = useState<Error | null>();
+    const [error, setError] = useState<any>(null);
 
     const stateListeners = useRef<CoreStateListener[]>([]);
     const eventListeners = useRef<CoreEventListener[]>([]);
@@ -33,9 +32,6 @@ const Core = (props: Props) => {
     };
 
     useEffect(() => {
-        if (initialized.current) return;
-        initialized.current = true;
-
         const onCoreEvent = ({ name, args }: NewStateEvent | CoreEventEvent) => {
             switch (name) {
                 case 'NewState':
@@ -67,61 +63,28 @@ const Core = (props: Props) => {
             }
         };
 
+        window.core = transport;
+        window.onCoreEvent = onCoreEvent;
+
+        if (initialized.current) return;
+        initialized.current = true;
+
         const initCore = async () => {
             try {
                 await transport.init(props.appInfo);
-                window.core = transport;
-                window.onCoreEvent = onCoreEvent;
                 setReady(true);
                 setError(null);
-
-                try {
-                    const ctx = (await transport.getState('ctx')) as any;
-                    if (!ctx?.profile?.auth?.key && AUTH_KEY) {
-                        await transport.dispatch({
-                            action: 'Ctx',
-                            args: {
-                                action: 'Authenticate',
-                                args: {
-                                    type: 'LoginWithToken',
-                                    token: AUTH_KEY,
-                                },
-                            },
-                        });
-                    }
-                } catch (authError) {
-                    console.warn('Auto-login error:', authError);
-                }
             } catch (e: any) {
                 console.error('Failed to initialize core:', e);
                 const msg = String(e?.message || '');
                 if (msg.includes('Serialization error') || msg.includes('missing field')) {
                     try {
                         window.localStorage.removeItem('profile');
-                        await transport.init(props.appInfo);
-                        window.core = transport;
-                        window.onCoreEvent = onCoreEvent;
-                        setReady(true);
-                        setError(null);
-
-                        if (AUTH_KEY) {
-                            await transport.dispatch({
-                                action: 'Ctx',
-                                args: {
-                                    action: 'Authenticate',
-                                    args: {
-                                        type: 'LoginWithToken',
-                                        token: AUTH_KEY,
-                                    },
-                                },
-                            });
-                        }
+                        // Reload so wasm worker starts fresh with empty profile
+                        window.location.reload();
                         return;
-                    } catch (retryErr: any) {
-                        console.error('Core initialization retry failed:', retryErr);
-                        setReady(false);
-                        setError(retryErr);
-                        return;
+                    } catch (reloadErr) {
+                        console.error('Reload failed:', reloadErr);
                     }
                 }
                 setReady(false);
@@ -130,18 +93,19 @@ const Core = (props: Props) => {
         };
 
         initCore();
-
-        return () => {
-            stateListeners.current = [];
-            eventListeners.current = [];
-            errorListeners.current = [];
-        };
     }, []);
 
     return (
         <CoreContext.Provider value={{ transport, on, off }}>
-            { error && !ready && <Error message={error.message} /> }
+            { error && <Error message={error.message || String(error)} /> }
             { ready && !error && props.children }
+            { !ready && !error && (
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0e0c1a', color: '#fff' }}>
+                    <div style={{ textAlign: 'center' }}>
+                        <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500, letterSpacing: 0.5 }}>Loading Stremio...</div>
+                    </div>
+                </div>
+            ) }
         </CoreContext.Provider>
     );
 };

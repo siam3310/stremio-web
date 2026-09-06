@@ -13,15 +13,21 @@ const NavMenu = require('./NavMenu');
 const styles = require('./styles');
 const { t } = require('i18next');
 
-const HorizontalNavBar = React.memo(({ className, route, query, title, backButton, searchBar, fullscreenButton, navMenu, originPath, hdrInfo, ...props }) => {
+const HorizontalNavBar = React.memo(({ className, route, query, title, backButton, searchBar, fullscreenButton, navMenu, originPath, onBackClick, hdrInfo, ...props }) => {
     const navigate = useNavigate();
-    const backButtonOnClick = React.useCallback(() => {
+    const backButtonOnClick = React.useCallback((event) => {
+        if (typeof onBackClick === 'function') {
+            onBackClick(event);
+            return;
+        }
         if (originPath) {
             navigate(originPath, { replace: true });
-        } else {
+        } else if (window.history.state && window.history.state.idx > 0) {
             navigate(-1);
+        } else {
+            navigate('/', { replace: true });
         }
-    }, [originPath, navigate]);
+    }, [originPath, onBackClick, navigate]);
     const [fullscreen, requestFullscreen, exitFullscreen, , supported] = useFullscreen();
     const renderNavMenuLabel = React.useCallback(({ ref, className, onClick, children, }) => (
         <Button ref={ref} className={classnames(className, styles['button-container'], styles['menu-button-container'])} tabIndex={-1} onClick={onClick}>
@@ -98,6 +104,7 @@ HorizontalNavBar.propTypes = {
     fullscreenButton: PropTypes.bool,
     navMenu: PropTypes.bool,
     originPath: PropTypes.string,
+    onBackClick: PropTypes.func,
     hdrInfo: PropTypes.shape({
         gamma: PropTypes.string,
     }),

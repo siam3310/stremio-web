@@ -12,6 +12,7 @@ const { useServices, useGamepad } = require('stremio/services');
 const { useContentGamepadNavigation } = require('stremio/services/GamepadNavigation');
 const { useSettings, useProfile, useFullscreen, useBinaryState, useToast, useStreamingServer, withCoreSuspender, usePlatform, onShortcut, getKeyboardShortcutKey, getKeyboardShortcutKeys, useDiscord, EMPTY_DISCORD_TIMESTAMPS, getPlaybackDiscordActivity } = require('stremio/common');
 const { default: toPath } = require('stremio-router/toPath');
+const { default: useNavigateWithOrigin } = require('stremio-router/useNavigateWithOrigin');
 const { HorizontalNavBar, Transition, ContextMenu } = require('stremio/components');
 const { default: Buffering } = require('./Buffering');
 const VolumeChangeIndicator = require('./VolumeChangeIndicator');
@@ -55,6 +56,25 @@ const Player = () => {
         videoId
     }), [stream, streamTransportUrl, metaTransportUrl, type, id, videoId]);
     const navigate = useNavigate();
+    const { getStoredOrigin } = useNavigateWithOrigin();
+    const fallbackOrigin = React.useMemo(() => {
+        if (type && id) {
+            return `/metadetails/${type}/${id}${videoId ? `/${videoId}` : ''}`;
+        }
+        return '/';
+    }, [type, id, videoId]);
+    const originPath = React.useMemo(() => getStoredOrigin(fallbackOrigin), [getStoredOrigin, fallbackOrigin]);
+
+    const handleBackNavigation = React.useCallback(() => {
+        if (originPath) {
+            navigate(originPath, { replace: true });
+        } else if (window.history.state && window.history.state.idx > 0) {
+            navigate(-1);
+        } else {
+            navigate(fallbackOrigin, { replace: true });
+        }
+    }, [originPath, fallbackOrigin, navigate]);
+
     const { t } = useTranslation();
     const services = useServices();
     const core = useCore();
@@ -197,7 +217,7 @@ const Player = () => {
                     navigate(toPath(deepLinks.metaDetailsStreams), { replace: true });
                 }
             } else {
-                navigate(-1);
+                handleBackNavigation();
             }
 
         } else {
@@ -217,9 +237,9 @@ const Player = () => {
             const deepLinks = player.nextVideo.deepLinks;
             handleNextVideoNavigation(deepLinks, profile.settings.bingeWatching, true);
         } else {
-            navigate(-1);
+            handleBackNavigation();
         }
-    }, [player.nextVideo, profile.settings.bingeWatching, handleNextVideoNavigation]);
+    }, [player.nextVideo, profile.settings.bingeWatching, handleNextVideoNavigation, handleBackNavigation]);
 
     const onError = React.useCallback((error) => {
         console.error('Player', error);
@@ -508,7 +528,7 @@ const Player = () => {
                     title: 'P2P / Magnet streams are not supported in direct streaming mode. Please select a direct HTTP/HLS stream.',
                     timeout: 5000
                 });
-                navigate(-1);
+                handleBackNavigation();
                 return;
             }
 
@@ -832,8 +852,8 @@ const Player = () => {
         if (settings.escExitFullscreen && fullscreen) {
             return;
         }
-        navigate(-1);
-    }, [settings.escExitFullscreen, fullscreen]);
+        handleBackNavigation();
+    }, [settings.escExitFullscreen, fullscreen, handleBackNavigation]);
 
     React.useLayoutEffect(() => {
         if (!routeFocused) {
@@ -1051,6 +1071,8 @@ const Player = () => {
                 className={classnames(styles['layer'], styles['nav-bar-layer'])}
                 title={player.title !== null ? player.title : ''}
                 backButton={true}
+                originPath={originPath}
+                onBackClick={handleBackNavigation}
                 fullscreenButton={true}
                 hdrInfo={video.state.hdrInfo}
                 onMouseMove={onBarMouseMove}
