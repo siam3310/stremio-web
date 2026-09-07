@@ -1,0 +1,1219 @@
+[
+  {
+    "transportUrl": "https://v3-cinemeta.strem.io/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "com.linvo.cinemeta",
+      "version": "3.0.14",
+      "name": "Cinemeta",
+      "contactEmail": null,
+      "description": "The official addon for movie and series catalogs",
+      "logo": null,
+      "background": null,
+      "types": [
+        "movie",
+        "series"
+      ],
+      "resources": [
+        "catalog",
+        "meta",
+        "addon_catalog"
+      ],
+      "idPrefixes": [
+        "tt"
+      ],
+      "catalogs": [
+        {
+          "id": "top",
+          "type": "movie",
+          "name": "Popular",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "Action",
+                "Adventure",
+                "Animation",
+                "Biography",
+                "Comedy",
+                "Crime",
+                "Documentary",
+                "Drama",
+                "Family",
+                "Fantasy",
+                "History",
+                "Horror",
+                "Mystery",
+                "Romance",
+                "Sci-Fi",
+                "Sport",
+                "Thriller",
+                "War",
+                "Western"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "top",
+          "type": "series",
+          "name": "Popular",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "Action",
+                "Adventure",
+                "Animation",
+                "Biography",
+                "Comedy",
+                "Crime",
+                "Documentary",
+                "Drama",
+                "Family",
+                "Fantasy",
+                "History",
+                "Horror",
+                "Mystery",
+                "Romance",
+                "Sci-Fi",
+                "Sport",
+                "Thriller",
+                "War",
+                "Western",
+                "Reality-TV",
+                "Talk-Show",
+                "Game-Show"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "year",
+          "type": "movie",
+          "name": "New",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": true,
+              "options": [
+                "2026",
+                "2025",
+                "2024",
+                "2023",
+                "2022",
+                "2021",
+                "2020",
+                "2019",
+                "2018",
+                "2017",
+                "2016",
+                "2015",
+                "2014",
+                "2013",
+                "2012",
+                "2011",
+                "2010",
+                "2009",
+                "2008",
+                "2007",
+                "2006",
+                "2005",
+                "2004",
+                "2003",
+                "2002",
+                "2001",
+                "2000",
+                "1999",
+                "1998",
+                "1997",
+                "1996",
+                "1995",
+                "1994",
+                "1993",
+                "1992",
+                "1991",
+                "1990",
+                "1989",
+                "1988",
+                "1987",
+                "1986",
+                "1985",
+                "1984",
+                "1983",
+                "1982",
+                "1981",
+                "1980",
+                "1979",
+                "1978",
+                "1977",
+                "1976",
+                "1975",
+                "1974",
+                "1973",
+                "1972",
+                "1971",
+                "1970",
+                "1969",
+                "1968",
+                "1967",
+                "1966",
+                "1965",
+                "1964",
+                "1963",
+                "1962",
+                "1961",
+                "1960",
+                "1959",
+                "1958",
+                "1957",
+                "1956",
+                "1955",
+                "1954",
+                "1953",
+                "1952",
+                "1951",
+                "1950",
+                "1949",
+                "1948",
+                "1947",
+                "1946",
+                "1945",
+                "1944",
+                "1943",
+                "1942",
+                "1941",
+                "1940",
+                "1939",
+                "1938",
+                "1937",
+                "1936",
+                "1935",
+                "1934",
+                "1933",
+                "1932",
+                "1931",
+                "1930",
+                "1929",
+                "1928",
+                "1927",
+                "1926",
+                "1925",
+                "1924",
+                "1923",
+                "1922",
+                "1921",
+                "1920"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "year",
+          "type": "series",
+          "name": "New",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": true,
+              "options": [
+                "2026",
+                "2025",
+                "2024",
+                "2023",
+                "2022",
+                "2021",
+                "2020",
+                "2019",
+                "2018",
+                "2017",
+                "2016",
+                "2015",
+                "2014",
+                "2013",
+                "2012",
+                "2011",
+                "2010",
+                "2009",
+                "2008",
+                "2007",
+                "2006",
+                "2005",
+                "2004",
+                "2003",
+                "2002",
+                "2001",
+                "2000",
+                "1999",
+                "1998",
+                "1997",
+                "1996",
+                "1995",
+                "1994",
+                "1993",
+                "1992",
+                "1991",
+                "1990",
+                "1989",
+                "1988",
+                "1987",
+                "1986",
+                "1985",
+                "1984",
+                "1983",
+                "1982",
+                "1981",
+                "1980",
+                "1979",
+                "1978",
+                "1977",
+                "1976",
+                "1975",
+                "1974",
+                "1973",
+                "1972",
+                "1971",
+                "1970",
+                "1969",
+                "1968",
+                "1967",
+                "1966",
+                "1965",
+                "1964",
+                "1963",
+                "1962",
+                "1961",
+                "1960"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "imdbRating",
+          "type": "movie",
+          "name": "Featured",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "Action",
+                "Adventure",
+                "Animation",
+                "Biography",
+                "Comedy",
+                "Crime",
+                "Documentary",
+                "Drama",
+                "Family",
+                "Fantasy",
+                "History",
+                "Horror",
+                "Mystery",
+                "Romance",
+                "Sci-Fi",
+                "Sport",
+                "Thriller",
+                "War",
+                "Western"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "imdbRating",
+          "type": "series",
+          "name": "Featured",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "Action",
+                "Adventure",
+                "Animation",
+                "Biography",
+                "Comedy",
+                "Crime",
+                "Documentary",
+                "Drama",
+                "Family",
+                "Fantasy",
+                "History",
+                "Horror",
+                "Mystery",
+                "Romance",
+                "Sci-Fi",
+                "Sport",
+                "Thriller",
+                "War",
+                "Western",
+                "Reality-TV",
+                "Talk-Show",
+                "Game-Show"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "last-videos",
+          "type": "series",
+          "name": "Last videos",
+          "extra": [
+            {
+              "name": "lastVideosIds",
+              "isRequired": true,
+              "options": [],
+              "optionsLimit": 100
+            }
+          ]
+        },
+        {
+          "id": "calendar-videos",
+          "type": "series",
+          "name": "Calendar videos",
+          "extra": [
+            {
+              "name": "calendarVideosIds",
+              "isRequired": true,
+              "options": [],
+              "optionsLimit": 100
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [
+        {
+          "id": "official",
+          "type": "all",
+          "name": "Official",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "official",
+          "type": "movie",
+          "name": "Official",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "official",
+          "type": "series",
+          "name": "Official",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "official",
+          "type": "channel",
+          "name": "Official",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "all",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "movie",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "series",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "channel",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "tv",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "Podcasts",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        },
+        {
+          "id": "community",
+          "type": "other",
+          "name": "Community",
+          "extraRequired": [],
+          "extraSupported": []
+        }
+      ],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": false,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": true,
+      "protected": true
+    }
+  },
+  {
+    "transportUrl": "http://127.0.0.1:11470/local-addon/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "org.stremio.local",
+      "version": "1.10.0",
+      "name": "Local Files (without catalog support)",
+      "contactEmail": null,
+      "description": "Local add-on to find playable files: .torrent, .mp4, .mkv and .avi",
+      "logo": null,
+      "background": null,
+      "types": [
+        "movie",
+        "series",
+        "other"
+      ],
+      "resources": [
+        {
+          "name": "meta",
+          "types": [
+            "other"
+          ],
+          "idPrefixes": [
+            "local:",
+            "bt:"
+          ]
+        },
+        {
+          "name": "stream",
+          "types": [
+            "movie",
+            "series"
+          ],
+          "idPrefixes": [
+            "tt"
+          ]
+        }
+      ],
+      "idPrefixes": null,
+      "catalogs": [],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": false,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": true,
+      "protected": true
+    }
+  },
+  {
+    "transportUrl": "https://hdhub.thevolecitor.qzz.io/eyJ0b3Jib3giOiI2MWJkMjMwMS01MTNmLTQ0MWUtODQ0OS1jMGIyMjJjNTI2NzMiLCJxdWFsaXRpZXMiOiIyMTYwcCwxMDgwcCw3MjBwLDQ4MHAiLCJzb3J0IjoiZGVzYyIsImNhdGFsb2dzIjoiZmVhdHVyZWQscG9wdWxhciJ9/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "com.stremio.HdHub",
+      "version": "1.0.7",
+      "name": "HdHub",
+      "contactEmail": null,
+      "description": "Watch movies and series from HdHub.",
+      "logo": "http://hdhub.thevolecitor.qzz.io/logo.png",
+      "background": "http://hdhub.thevolecitor.qzz.io/logo.png",
+      "types": [
+        "movie",
+        "series",
+        "HdHub"
+      ],
+      "resources": [
+        "stream",
+        "catalog"
+      ],
+      "idPrefixes": [
+        "tt",
+        "tmdb:",
+        "kitsu:"
+      ],
+      "catalogs": [
+        {
+          "id": "hdhub-featured-movies",
+          "type": "HdHub",
+          "name": "Featured Movies",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "hdhub-featured-series",
+          "type": "HdHub",
+          "name": "Featured Series",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "hdhub-popular-movies",
+          "type": "HdHub",
+          "name": "Popular Movies",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "hdhub-popular-series",
+          "type": "HdHub",
+          "name": "Popular Series",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": true,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://87d6a6ef6b58-webstreamrmbg.baby-beamup.club/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "webstreamr-mbg",
+      "version": "0.73.2",
+      "name": "WebStreamrMBG",
+      "contactEmail": null,
+      "description": "Provides HTTP URLs from streaming websites. Configure add-on for additional languages. Add MediaFlow proxy for more URLs.\n\nSupported languages: Albanian, German, Castilian Spanish, French, Gujarati, Hindi, Italian, Malayalam, Latin American Spanish, Punjabi, Tamil, Telugu\n\nSupported sources: 4KHDHub, CineHDPlus, Cuevana, Einschalten, Eurostreaming, Filmpalast, Frembed, FrenchCloud, HDHub4u, HomeCine, KinoGer, Kokoshka, MegaKino, MeineCloud, MostraGuarda, MovieBox, Movix, VerHdLink, VidSrc, VidZee, VixSrc\n\nSupported extractors: DoodStream, Dropload, Fastream, FileLions, FileMoon, Fsst, HUBLinks, HDStream4U, HubCloud, KinoGer, LuluStream, Mixdrop, MovieBox, SaveFiles, StreamEmbed, Streamtape, SuperVideo, Uqload, Vidara, Vidsonic, VidZee, VidSrc, VixSrc, VOE, YouTube, External",
+      "logo": "https://emojiapi.dev/api/v1/spider_web/256.png",
+      "background": null,
+      "types": [
+        "movie",
+        "series"
+      ],
+      "resources": [
+        "stream"
+      ],
+      "idPrefixes": [
+        "tmdb:",
+        "tt"
+      ],
+      "catalogs": [],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": true,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://free.flixnest.app/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "org.flixstreams.free",
+      "version": "1.0.0",
+      "name": "Flix-Streams Free",
+      "contactEmail": null,
+      "description": "Free Flix-Streams addon with HDHub, HDHub4u, Dailymotion, and DLStreams Live TV/Sports.",
+      "logo": "https://free.flixnest.app/static/favicon.svg",
+      "background": null,
+      "types": [
+        "movie",
+        "series",
+        "tv"
+      ],
+      "resources": [
+        "stream",
+        "catalog",
+        "meta"
+      ],
+      "idPrefixes": [
+        "tt",
+        "tmdb",
+        "essential",
+        "dlstreams"
+      ],
+      "catalogs": [
+        {
+          "id": "essential-live-events",
+          "type": "tv",
+          "name": "Events",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "soccer",
+                "basketball",
+                "baseball",
+                "american-football",
+                "ice-hockey",
+                "tennis",
+                "motorsport",
+                "formula-1",
+                "mma",
+                "boxing",
+                "wrestling",
+                "rugby-union",
+                "rugby-league",
+                "cricket",
+                "golf",
+                "volleyball",
+                "handball",
+                "cycling",
+                "athletics",
+                "darts",
+                "snooker",
+                "aussie-rules",
+                "gaelic-football",
+                "hurling",
+                "netball",
+                "badminton",
+                "table-tennis",
+                "swimming",
+                "diving",
+                "gymnastics",
+                "skiing",
+                "biathlon",
+                "skating",
+                "futsal",
+                "beach-soccer",
+                "water-polo",
+                "lacrosse",
+                "field-hockey",
+                "horse-racing",
+                "triathlon",
+                "esports",
+                "chess",
+                "sports-tv"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "dlstreams-live",
+          "type": "tv",
+          "name": "DLStreams - Top Channels",
+          "extra": [
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": true,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://siam3310-fib.lovable.app/api/public/stremio/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "com.fibwatch.stremio",
+      "version": "1.0.0",
+      "name": "Fibwatch",
+      "contactEmail": null,
+      "description": "Direct movie & series streams from Fibwatch — 57 titles • updated 2026-09-03 09:59:45 UTC",
+      "logo": "https://placehold.co/256x256/12100f/f5b93a/png?text=FW",
+      "background": "https://placehold.co/1280x720/12100f/f5b93a/png?text=Fibwatch",
+      "types": [
+        "movie",
+        "series"
+      ],
+      "resources": [
+        "catalog",
+        "meta",
+        "stream"
+      ],
+      "idPrefixes": [
+        "tt",
+        "fibw:"
+      ],
+      "catalogs": [
+        {
+          "id": "fibwatch-movies",
+          "type": "movie",
+          "name": "Fibwatch Movies",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "2160p",
+                "1080p",
+                "720p",
+                "480p"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "fibwatch-series",
+          "type": "series",
+          "name": "Fibwatch Series",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [
+                "2160p",
+                "1080p",
+                "720p",
+                "480p"
+              ],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": false,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://pengu.uk/%7B%22auth_token%22%3A%22p5fcVg4IsiHChu04GNGO_pV7b_isQKos9uRgw-KAXak%22%7D/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "com.penguplay",
+      "version": "1.3.9",
+      "name": "PenguPlay",
+      "contactEmail": null,
+      "description": "Stream movies and series in Stremio with configurable provider and quality filters.",
+      "logo": "https://pengu.uk/penguplay-icon.png",
+      "background": null,
+      "types": [
+        "movie",
+        "series"
+      ],
+      "resources": [
+        {
+          "name": "stream",
+          "types": [
+            "movie",
+            "series"
+          ],
+          "idPrefixes": [
+            "tt",
+            "tmdb:",
+            "tvdb:",
+            "mal:",
+            "kitsu:",
+            "tvmaze:",
+            "anilist:",
+            "anidb:"
+          ]
+        },
+        {
+          "name": "subtitles",
+          "types": [
+            "movie",
+            "series"
+          ],
+          "idPrefixes": [
+            "tt",
+            "tmdb:",
+            "tvdb:",
+            "mal:",
+            "kitsu:",
+            "tvmaze:",
+            "anilist:",
+            "anidb:"
+          ]
+        }
+      ],
+      "idPrefixes": [
+        "tt",
+        "tmdb:",
+        "tvdb:",
+        "mal:",
+        "kitsu:",
+        "tvmaze:",
+        "anilist:",
+        "anidb:"
+      ],
+      "catalogs": [],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": false,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://sports.highfly.dev/eyJpbmNsdWRlU3BvcnRzIjpbImNyaWNrZXQiLCJmb290YmFsbCJdfQ/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "community.sports.fly",
+      "version": "1.2.0",
+      "name": "Sports Streams",
+      "contactEmail": null,
+      "description": "Live and upcoming sports matches — football, basketball, cricket, UFC, tennis, and more.",
+      "logo": "https://cdn.highfly.dev/logo.ico",
+      "background": null,
+      "types": [
+        "sport"
+      ],
+      "resources": [
+        {
+          "name": "catalog",
+          "types": [
+            "sport"
+          ],
+          "idPrefixes": null
+        },
+        {
+          "name": "meta",
+          "types": [
+            "sport"
+          ],
+          "idPrefixes": [
+            "streamed",
+            "sf",
+            "recap",
+            "leaf"
+          ]
+        },
+        {
+          "name": "stream",
+          "types": [
+            "sport"
+          ],
+          "idPrefixes": [
+            "streamed",
+            "sf",
+            "recap",
+            "leaf"
+          ]
+        }
+      ],
+      "idPrefixes": [
+        "streamed",
+        "sf",
+        "recap",
+        "leaf"
+      ],
+      "catalogs": [
+        {
+          "id": "sports_live",
+          "type": "sport",
+          "name": "Live Now",
+          "extra": [
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "sports_today",
+          "type": "sport",
+          "name": "Today",
+          "extra": [
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "sports_football",
+          "type": "sport",
+          "name": "Football",
+          "extra": [
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "sports_cricket",
+          "type": "sport",
+          "name": "Cricket",
+          "extra": [
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": true,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  },
+  {
+    "transportUrl": "https://stiptv.ddns.me/eyJ1c2VYdHJlYW0iOmZhbHNlLCJtM3VVcmwiOiJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vYWJ1c2FlZWlkeC9NcmdpZnktQkRJWC1JUFRWL3JlZnMvaGVhZHMvbWFpbi9wbGF5bGlzdC5tM3UiLCJlbmFibGVFcGciOmZhbHNlLCJpbnN0YW5jZUlkIjoiNTI1NmFmMmItZGMwOS00NzQ5LTg1NjgtYjg3MzM0Y2RjNTg3In0=/manifest.json",
+    "transportName": "",
+    "manifest": {
+      "id": "org.stremio.m3u-epg-addon",
+      "version": "1.2.0",
+      "name": "M3U/EPG TV Addon",
+      "contactEmail": null,
+      "description": "IPTV addon with M3U, EPG & Xtream (JSON/M3U) + encrypted configs, LRU/Redis cache, cache toggle, EPG offset",
+      "logo": null,
+      "background": null,
+      "types": [
+        "tv",
+        "movie"
+      ],
+      "resources": [
+        "catalog",
+        "stream",
+        "meta"
+      ],
+      "idPrefixes": [
+        "iptv_"
+      ],
+      "catalogs": [
+        {
+          "id": "iptv_channels",
+          "type": "tv",
+          "name": "IPTV Channels",
+          "extra": [
+            {
+              "name": "genre",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        },
+        {
+          "id": "iptv_movies",
+          "type": "movie",
+          "name": "IPTV Movies",
+          "extra": [
+            {
+              "name": "search",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            },
+            {
+              "name": "skip",
+              "isRequired": false,
+              "options": [],
+              "optionsLimit": 1
+            }
+          ]
+        }
+      ],
+      "addonCatalogs": [],
+      "behaviorHints": {
+        "adult": false,
+        "p2p": false,
+        "configurable": true,
+        "configurationRequired": false
+      }
+    },
+    "flags": {
+      "official": false,
+      "protected": false
+    }
+  }
+]

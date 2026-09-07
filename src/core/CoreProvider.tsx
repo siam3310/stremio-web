@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import CoreContext from './CoreContext';
 import createTransport from './createTransport';
 import Error from './Error';
-const { DEFAULT_AUTH } = require('./authInjection');
+const { DEFAULT_ADDONS } = require('./authInjection');
 
 const transport = createTransport();
 
@@ -74,35 +74,24 @@ const Core = (props: Props) => {
             try {
                 await transport.init(props.appInfo);
 
-                // Verify and synchronize user authentication with the core and Stremio API
+                // Ensure custom addons from user export are installed without requiring account login
                 try {
                     const ctxState: any = await transport.getState('ctx');
-                    if (ctxState?.profile?.auth) {
-                        transport.dispatch({ action: 'Ctx', args: { action: 'PullUserFromAPI' } });
-                        transport.dispatch({ action: 'Ctx', args: { action: 'PullAddonsFromAPI' } });
-                        transport.dispatch({ action: 'Ctx', args: { action: 'SyncLibraryWithAPI' } });
-                    } else {
-                        const hasReloaded = sessionStorage.getItem('stremio_auto_auth_synced');
-                        if (!hasReloaded) {
-                            sessionStorage.setItem('stremio_auto_auth_synced', 'true');
-                            const raw = window.localStorage.getItem('profile');
-                            if (raw) {
-                                try {
-                                    const parsed = JSON.parse(raw);
-                                    if (parsed && typeof parsed === 'object') {
-                                        parsed.auth = DEFAULT_AUTH;
-                                        window.localStorage.setItem('profile', JSON.stringify(parsed));
-                                    }
-                                } catch (_err) {
-                                    // Ignore parse error
+                    const installedAddons = ctxState?.profile?.addons || [];
+                    const installedUrls = new Set(installedAddons.map((a: any) => a && a.transportUrl));
+                    for (const addon of DEFAULT_ADDONS) {
+                        if (addon && addon.transportUrl && !installedUrls.has(addon.transportUrl)) {
+                            transport.dispatch({
+                                action: 'Ctx',
+                                args: {
+                                    action: 'InstallAddon',
+                                    args: addon
                                 }
-                            }
-                            window.location.reload();
-                            return;
+                            });
                         }
                     }
-                } catch (syncErr) {
-                    console.warn('Auto auth synchronization warning:', syncErr);
+                } catch (addonErr) {
+                    console.warn('Default addons initialization warning:', addonErr);
                 }
 
                 setReady(true);

@@ -1,11 +1,6 @@
 // Copyright (C) 2017-2023 Smart code 203358507
 require('./core/authInjection');
 
-if (typeof process.env.SENTRY_DSN === 'string') {
-    const Sentry = require('@sentry/browser');
-    Sentry.init({ dsn: process.env.SENTRY_DSN });
-}
-
 const Bowser = require('bowser');
 const browser = Bowser.parse(window.navigator?.userAgent || '');
 if (browser?.platform?.type === 'desktop') {
