@@ -28,7 +28,7 @@ const HorizontalNavBar = React.memo(({ className, route, query, title, backButto
             navigate('/', { replace: true });
         }
     }, [originPath, onBackClick, navigate]);
-    const [fullscreen, requestFullscreen, exitFullscreen, , supported] = useFullscreen();
+    const [fullscreen, , , toggleFullscreen, supported] = useFullscreen();
     const renderNavMenuLabel = React.useCallback(({ ref, className, onClick, children, }) => (
         <Button ref={ref} className={classnames(className, styles['button-container'], styles['menu-button-container'])} tabIndex={-1} onClick={onClick}>
             <Icon className={styles['icon']} name={'person-outline'} />
@@ -54,7 +54,7 @@ const HorizontalNavBar = React.memo(({ className, route, query, title, backButto
             }
             {
                 typeof title === 'string' && title.length > 0 ?
-                    <h2 className={styles['title']}>{title}</h2>
+                    <h2 className={styles['title']} title={title}>{title}</h2>
                     :
                     null
             }
@@ -74,8 +74,13 @@ const HorizontalNavBar = React.memo(({ className, route, query, title, backButto
                         null
                 }
                 {
-                    supported && fullscreenButton ?
-                        <Button className={styles['button-container']} title={fullscreen ? t('EXIT_FULLSCREEN') : t('ENTER_FULLSCREEN')} tabIndex={-1} onClick={fullscreen ? exitFullscreen : requestFullscreen}>
+                    (supported ?? true) && fullscreenButton ?
+                        <Button
+                            className={classnames(styles['button-container'], styles['fullscreen-button-container'])}
+                            title={fullscreen ? t('EXIT_FULLSCREEN') : t('ENTER_FULLSCREEN')}
+                            tabIndex={-1}
+                            onClick={toggleFullscreen}
+                        >
                             <Icon className={styles['icon']} name={fullscreen ? 'minimize' : 'maximize'} />
                         </Button>
                         :

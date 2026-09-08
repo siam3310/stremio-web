@@ -10,6 +10,7 @@ const SeekBar = require('./SeekBar');
 const VolumeSlider = require('./VolumeSlider');
 const styles = require('./styles');
 const { useBinaryState, usePlatform } = require('stremio/common');
+const { useFullscreen } = require('stremio/common/Fullscreen');
 const { t } = require('i18next');
 
 const VIDEO_SCALE_ICONS = {
@@ -56,6 +57,7 @@ const ControlBar = React.forwardRef(({
 }, ref) => {
     const { chromecast } = useServices();
     const platform = usePlatform();
+    const [fullscreen, , , toggleFullscreen] = useFullscreen();
     const [chromecastServiceActive, setChromecastServiceActive] = React.useState(() => chromecast.active);
     const [buttonsMenuOpen, , , toggleButtonsMenu] = useBinaryState(false);
     const onSubtitlesButtonMouseDown = React.useCallback((event) => {
@@ -209,6 +211,9 @@ const ControlBar = React.forwardRef(({
                     </Button>
                     <Button className={classnames(styles['control-bar-button'], { 'disabled': !stream })} tabIndex={-1} onMouseDown={onOptionsButtonMouseDown} onClick={onToggleOptionsMenu}>
                         <Icon className={styles['icon']} name={'more-horizontal'} />
+                    </Button>
+                    <Button className={styles['control-bar-button']} title={fullscreen ? t('EXIT_FULLSCREEN') : t('ENTER_FULLSCREEN')} tabIndex={-1} onClick={toggleFullscreen}>
+                        <Icon className={styles['icon']} name={fullscreen ? 'minimize' : 'maximize'} />
                     </Button>
                 </div>
             </div>

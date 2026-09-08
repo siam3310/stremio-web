@@ -141,7 +141,7 @@ const MetaDetails = () => {
             <HorizontalNavBar
                 className={styles['nav-bar']}
                 backButton={true}
-                fullscreenButton={true}
+                fullscreenButton={false}
                 navMenu={true}
                 originPath={originPath}
             />

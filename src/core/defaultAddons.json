@@ -530,59 +530,6 @@
     }
   },
   {
-    "transportUrl": "http://127.0.0.1:11470/local-addon/manifest.json",
-    "transportName": "",
-    "manifest": {
-      "id": "org.stremio.local",
-      "version": "1.10.0",
-      "name": "Local Files (without catalog support)",
-      "contactEmail": null,
-      "description": "Local add-on to find playable files: .torrent, .mp4, .mkv and .avi",
-      "logo": null,
-      "background": null,
-      "types": [
-        "movie",
-        "series",
-        "other"
-      ],
-      "resources": [
-        {
-          "name": "meta",
-          "types": [
-            "other"
-          ],
-          "idPrefixes": [
-            "local:",
-            "bt:"
-          ]
-        },
-        {
-          "name": "stream",
-          "types": [
-            "movie",
-            "series"
-          ],
-          "idPrefixes": [
-            "tt"
-          ]
-        }
-      ],
-      "idPrefixes": null,
-      "catalogs": [],
-      "addonCatalogs": [],
-      "behaviorHints": {
-        "adult": false,
-        "p2p": false,
-        "configurable": false,
-        "configurationRequired": false
-      }
-    },
-    "flags": {
-      "official": true,
-      "protected": true
-    }
-  },
-  {
     "transportUrl": "https://hdhub.thevolecitor.qzz.io/eyJ0b3Jib3giOiI2MWJkMjMwMS01MTNmLTQ0MWUtODQ0OS1jMGIyMjJjNTI2NzMiLCJxdWFsaXRpZXMiOiIyMTYwcCwxMDgwcCw3MjBwLDQ4MHAiLCJzb3J0IjoiZGVzYyIsImNhdGFsb2dzIjoiZmVhdHVyZWQscG9wdWxhciJ9/manifest.json",
     "transportName": "",
     "manifest": {
@@ -848,7 +795,7 @@
       "version": "1.0.0",
       "name": "Fibwatch",
       "contactEmail": null,
-      "description": "Direct movie & series streams from Fibwatch — 57 titles • updated 2026-09-03 09:59:45 UTC",
+      "description": "Direct movie & series streams from Fibwatch — 52 titles • updated 2026-09-08 14:00:48 UTC",
       "logo": "https://placehold.co/256x256/12100f/f5b93a/png?text=FW",
       "background": "https://placehold.co/1280x720/12100f/f5b93a/png?text=Fibwatch",
       "types": [

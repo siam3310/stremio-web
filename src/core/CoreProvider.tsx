@@ -73,29 +73,46 @@ const Core = (props: Props) => {
         const initCore = async () => {
             try {
                 await transport.init(props.appInfo);
-
-                // Ensure custom addons from user export are installed without requiring account login
-                try {
-                    const ctxState: any = await transport.getState('ctx');
-                    const installedAddons = ctxState?.profile?.addons || [];
-                    const installedUrls = new Set(installedAddons.map((a: any) => a && a.transportUrl));
-                    for (const addon of DEFAULT_ADDONS) {
-                        if (addon && addon.transportUrl && !installedUrls.has(addon.transportUrl)) {
-                            transport.dispatch({
-                                action: 'Ctx',
-                                args: {
-                                    action: 'InstallAddon',
-                                    args: addon
-                                }
-                            });
-                        }
-                    }
-                } catch (addonErr) {
-                    console.warn('Default addons initialization warning:', addonErr);
-                }
-
                 setReady(true);
                 setError(null);
+
+                // Ensure custom addons from user export are installed and local addon is uninstalled (non-blocking)
+                setTimeout(async () => {
+                    try {
+                        const ctxState: any = await transport.getState('ctx');
+                        const installedAddons = ctxState?.profile?.addons || [];
+                        const installedUrls = new Set(installedAddons.map((a: any) => a && a.transportUrl));
+
+                        // Uninstall local file add-on if present
+                        for (const a of installedAddons) {
+                            const id = a?.manifest?.id;
+                            const url = a?.transportUrl;
+                            if (id === 'org.stremio.local' || (url && (url.includes('11470') || url.includes('local-addon')))) {
+                                transport.dispatch({
+                                    action: 'Ctx',
+                                    args: {
+                                        action: 'UninstallAddon',
+                                        args: { transportUrl: a.transportUrl }
+                                    }
+                                });
+                            }
+                        }
+
+                        for (const addon of DEFAULT_ADDONS) {
+                            if (addon && addon.transportUrl && !installedUrls.has(addon.transportUrl)) {
+                                transport.dispatch({
+                                    action: 'Ctx',
+                                    args: {
+                                        action: 'InstallAddon',
+                                        args: addon
+                                    }
+                                });
+                            }
+                        }
+                    } catch (addonErr) {
+                        console.warn('Default addons initialization warning:', addonErr);
+                    }
+                }, 10);
             } catch (e: any) {
                 console.error('Failed to initialize core:', e);
                 const msg = String(e?.message || '');
@@ -122,10 +139,51 @@ const Core = (props: Props) => {
             { error && <Error message={error.message || String(error)} /> }
             { ready && !error && props.children }
             { !ready && !error && (
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#0e0c1a', color: '#fff' }}>
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ opacity: 0.8, fontSize: 16, fontWeight: 500, letterSpacing: 0.5 }} dangerouslySetInnerHTML={{ __html: 'Loading...' }} />
+                <div
+                    id="app-preloader"
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100vh',
+                        width: '100vw',
+                        background: 'radial-gradient(ellipse at center, #1b1836 0%, #0c0a18 100%)',
+                        color: '#fff',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        zIndex: 99999,
+                    }}
+                >
+                    <div
+                        style={{
+                            position: 'relative',
+                            width: 56,
+                            height: 56,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <div
+                            style={{
+                                width: 44,
+                                height: 44,
+                                borderRadius: '50%',
+                                border: '3px solid rgba(138, 92, 246, 0.15)',
+                                borderTopColor: '#7c5dfa',
+                                borderRightColor: '#a78bfa',
+                                animation: 'stremio-preloader-spin 0.85s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite',
+                            }}
+                        />
                     </div>
+                    <style>{`
+                        @keyframes stremio-preloader-spin {
+                            0% { transform: rotate(0deg); }
+                            100% { transform: rotate(360deg); }
+                        }
+                    `}</style>
                 </div>
             ) }
         </CoreContext.Provider>

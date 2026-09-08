@@ -17,17 +17,17 @@ export default [
     {
         path: '/library/:type?',
         view: 1,
-        element: <routes.Library />,
+        element: <routes.Discover />,
     },
     {
         path: '/calendar/:year?/:month?',
         view: 1,
-        element: <routes.Calendar />,
+        element: <routes.Discover />,
     },
     {
         path: '/continuewatching/:type?',
         view: 1,
-        element: <routes.Library />,
+        element: <routes.Discover />,
     },
     {
         path: '/search',

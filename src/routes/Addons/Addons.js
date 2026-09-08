@@ -17,8 +17,11 @@ const useAddonDetailsTransportUrl = require('./useAddonDetailsTransportUrl');
 const useSelectableInputs = require('./useSelectableInputs');
 const styles = require('./styles');
 const { AddonPlaceholder } = require('./AddonPlaceholder');
+const { default: AddonsPasscodeGate, isAddonsUnlocked, setAddonsUnlockedState } = require('./AddonsPasscodeGate');
+const { FirebaseAddonsModal } = require('./FirebaseAddonsModal');
 
 const Addons = () => {
+    const [unlocked, setUnlocked] = React.useState(() => isAddonsUnlocked());
     const { type, transportUrl, catalogId } = useParams();
     const [queryParams] = useSearchParams();
     const urlParams = React.useMemo(() => ({
@@ -36,6 +39,7 @@ const Addons = () => {
     const selectInputs = useSelectableInputs(installedAddons, remoteAddons);
     const [filtersModalOpen, openFiltersModal, closeFiltersModal] = useBinaryState(false);
     const [addAddonModalOpen, openAddAddonModal, closeAddAddonModal] = useBinaryState(false);
+    const [firebaseModalOpen, openFirebaseModal, closeFirebaseModal] = useBinaryState(false);
     const addAddonUrlInputRef = React.useRef(null);
     const addAddonOnSubmit = React.useCallback(() => {
         if (addAddonUrlInputRef.current !== null) {
@@ -122,6 +126,15 @@ const Addons = () => {
         setSearch('');
         clearSharedAddon();
     }, [urlParams, queryParams]);
+
+    if (!unlocked) {
+        return (
+            <MainNavBars className={styles['addons-container']} route={'addons'}>
+                <AddonsPasscodeGate onUnlock={() => setUnlocked(true)} />
+            </MainNavBars>
+        );
+    }
+
     return (
         <MainNavBars className={styles['addons-container']} route={'addons'}>
             <div className={styles['addons-content']}>
@@ -134,6 +147,30 @@ const Addons = () => {
                         />
                     ))}
                     <div className={styles['spacing']} />
+                    <Button
+                        className={styles['add-button-container']}
+                        title={'Lock Add-on Management'}
+                        onClick={() => {
+                            setAddonsUnlockedState(false);
+                            setUnlocked(false);
+                        }}
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg>
+                        <div className={styles['add-button-label']}>Lock</div>
+                    </Button>
+                    <Button
+                        className={styles['add-button-container']}
+                        title={'Firebase Cloud Add-on Manager'}
+                        onClick={openFirebaseModal}
+                    >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffca28" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                        </svg>
+                        <div className={styles['add-button-label']}>Firebase Sync</div>
+                    </Button>
                     <Button className={styles['add-button-container']} title={t('ADD_ADDON')} onClick={openAddAddonModal}>
                         <Icon className={styles['icon']} name={'add'} />
                         <div className={styles['add-button-label']}>{t('ADD_ADDON')}</div>
@@ -308,6 +345,11 @@ const Addons = () => {
                     :
                     null
             }
+            <FirebaseAddonsModal
+                isOpen={firebaseModalOpen}
+                onClose={closeFirebaseModal}
+                installedAddonsList={installedAddons.catalog}
+            />
         </MainNavBars>
     );
 };

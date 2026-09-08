@@ -29,8 +29,16 @@ const sanitizeAndInjectAddons = () => {
                             parsed.auth = null;
                         }
                         if (Array.isArray(parsed.addons)) {
+                            // Filter out local files addon
+                            const initialLength = parsed.addons.length;
+                            parsed.addons = parsed.addons.filter((a) => {
+                                const id = a && a.manifest && a.manifest.id;
+                                const url = a && a.transportUrl;
+                                return id !== 'org.stremio.local' && (!url || (!url.includes('11470') && !url.includes('local-addon')));
+                            });
+                            let updated = parsed.addons.length !== initialLength;
+
                             const existingUrls = new Set(parsed.addons.map((a) => a && a.transportUrl));
-                            let updated = false;
                             for (const addon of DEFAULT_ADDONS) {
                                 if (addon && addon.transportUrl && !existingUrls.has(addon.transportUrl)) {
                                     parsed.addons.push(addon);
@@ -64,9 +72,14 @@ const sanitizeAndInjectAddons = () => {
                     parsed.auth = null;
                 }
 
-                // Merge default addons
+                // Merge default addons and filter out local addon
                 if (parsed.settings && typeof parsed.settings === 'object') {
                     if (Array.isArray(parsed.addons)) {
+                        parsed.addons = parsed.addons.filter((a) => {
+                            const id = a && a.manifest && a.manifest.id;
+                            const url = a && a.transportUrl;
+                            return id !== 'org.stremio.local' && (!url || (!url.includes('11470') && !url.includes('local-addon')));
+                        });
                         const existingUrls = new Set(parsed.addons.map((a) => a && a.transportUrl));
                         for (const addon of DEFAULT_ADDONS) {
                             if (addon && addon.transportUrl && !existingUrls.has(addon.transportUrl)) {

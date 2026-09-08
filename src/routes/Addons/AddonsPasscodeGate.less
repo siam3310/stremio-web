@@ -1,0 +1,195 @@
+// Copyright (C) 2017-2025 Smart code 203358507
+
+@import (reference) '~stremio/common/screen-sizes.less';
+
+.gate-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 2rem;
+    box-sizing: border-box;
+
+    .gate-card {
+        background-color: var(--overlay-color);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1.4rem;
+        padding: 3rem 2.5rem;
+        max-width: 440px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        animation: gateFadeIn 0.25s ease-out;
+
+        .icon-badge {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(124, 93, 250, 0.25) 0%, rgba(124, 93, 250, 0.05) 100%);
+            border: 2px solid rgba(124, 93, 250, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-accent-color);
+
+            svg {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        .gate-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-foreground-color);
+            margin: 0 0 0.75rem 0;
+            letter-spacing: -0.01em;
+        }
+
+        .gate-description {
+            font-size: 1.35rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            margin: 0 0 2rem 0;
+        }
+
+        .gate-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+
+            .input-wrapper {
+                position: relative;
+                width: 100%;
+                display: flex;
+                align-items: center;
+
+                .passcode-input {
+                    width: 100%;
+                    height: 3.4rem;
+                    padding: 0 3.2rem 0 1.2rem;
+                    background-color: rgba(255, 255, 255, 0.08);
+                    border: 1px solid rgba(255, 255, 255, 0.15);
+                    border-radius: 0.8rem;
+                    color: var(--primary-foreground-color);
+                    font-size: 1.4rem;
+                    box-sizing: border-box;
+                    outline: none;
+                    transition: border-color 0.2s ease, background-color 0.2s ease;
+
+                    &:focus {
+                        border-color: var(--primary-accent-color);
+                        background-color: rgba(255, 255, 255, 0.12);
+                    }
+
+                    &.error-input {
+                        border-color: #ef4444;
+                        animation: shake 0.35s ease;
+                    }
+                }
+
+                .toggle-visibility-button {
+                    position: absolute;
+                    right: 0.8rem;
+                    background: transparent;
+                    border: none;
+                    cursor: pointer;
+                    color: rgba(255, 255, 255, 0.6);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.4rem;
+                    outline: none;
+
+                    &:hover {
+                        color: var(--primary-foreground-color);
+                    }
+
+                    svg {
+                        width: 18px;
+                        height: 18px;
+                    }
+                }
+            }
+
+            .error-message {
+                color: #f87171;
+                font-size: 1.25rem;
+                font-weight: 500;
+                margin-top: -0.4rem;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+            .unlock-button {
+                width: 100%;
+                height: 3.4rem;
+                background-color: var(--primary-accent-color);
+                color: var(--primary-foreground-color);
+                border: none;
+                border-radius: 0.8rem;
+                font-size: 1.4rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: opacity 0.2s ease, transform 0.1s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.6rem;
+                outline: none;
+
+                &:hover {
+                    opacity: 0.9;
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+            }
+        }
+    }
+}
+
+@keyframes gateFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+
+@media only screen and (max-width: @minimum) {
+    .gate-container {
+        padding: 1rem;
+
+        .gate-card {
+            padding: 2rem 1.5rem;
+
+            .gate-title {
+                font-size: 1.6rem;
+            }
+
+            .gate-description {
+                font-size: 1.25rem;
+            }
+        }
+    }
+}

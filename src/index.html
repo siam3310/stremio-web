@@ -58,14 +58,28 @@
     <link rel="apple-touch-startup-image" href="<%= htmlWebpackPlugin.options.imagesPath %>/splash/apple-splash-640-1136.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)">
     <link rel="apple-touch-startup-image" href="<%= htmlWebpackPlugin.options.imagesPath %>/splash/apple-splash-1136-640.jpg" media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2) and (orientation: landscape)">
     <link rel="manifest" href="manifest.json" />
+    <link rel="preconnect" href="https://v5-cinemeta.strem.io" crossorigin />
+    <link rel="dns-prefetch" href="https://v5-cinemeta.strem.io" />
+    <link rel="preconnect" href="https://images.metahub.space" crossorigin />
+    <link rel="dns-prefetch" href="https://images.metahub.space" />
     <title>Stremio - Freedom to Stream</title>
     <%= htmlWebpackPlugin.tags.headTags %>
 </head>
 
 <body>
-    <div id="app"></div>
+    <div id="app">
+        <div style="display:flex;align-items:center;justify-content:center;height:100vh;width:100vw;background:radial-gradient(ellipse at center, #1b1836 0%, #0c0a18 100%);position:fixed;top:0;left:0;z-index:99999;">
+            <div style="width:44px;height:44px;border-radius:50%;border:3px solid rgba(138,92,246,0.15);border-top-color:#7c5dfa;border-right-color:#a78bfa;animation:init-spin 0.85s cubic-bezier(0.5,0.1,0.5,0.9) infinite;"></div>
+        </div>
+        <style>
+            @keyframes init-spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        </style>
+    </div>
     <%= htmlWebpackPlugin.tags.bodyTags %>
-    <script src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <script defer src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script async src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
 </body>
 

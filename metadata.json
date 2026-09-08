@@ -1,6 +1,6 @@
 {
   "name": "Stremio",
-  "description": "Freedom to stream - all video content in one place",
+  "description": "Customized Stremio Web with top community add-ons pre-connected for movies, series, live sports, and IPTV",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

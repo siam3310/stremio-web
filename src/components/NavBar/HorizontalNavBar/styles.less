@@ -38,7 +38,9 @@
     }
 
     .title {
-        flex: 4 0 0;
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
         padding: 0 1rem;
         font-size: 1.2rem;
         font-style: normal;
@@ -55,11 +57,17 @@
     }
 
     .buttons-container {
+        flex: none;
         display: flex;
         flex-direction: row;
         align-items: center;
         gap: 0.5rem;
         overflow: visible;
+    }
+
+    .fullscreen-button-container {
+        flex: none;
+        display: flex !important;
     }
 
     .hdr-indicator {
@@ -133,7 +141,7 @@
         .button-container {
             margin: 0 1rem;
 
-            &:not(.back-button-container):not(.menu-button-container) {
+            &:not(.back-button-container):not(.menu-button-container):not(.fullscreen-button-container) {
                 display: none;
             }
         }

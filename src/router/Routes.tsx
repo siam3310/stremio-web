@@ -53,11 +53,18 @@ const Routes = () => {
     const [views, setViews] = React.useState<(CachedView | null)[]>(() => getNextViews([], location));
 
     /**
-     * Bypass intro/login routes completely; ensure user stays in the main application:
+     * Bypass intro/login and deprecated library/calendar routes completely:
      */
     React.useEffect(() => {
-        if (location.pathname === '/intro' || location.pathname === '/login' || location.pathname === '/signup') {
-            navigate('/', { replace: true });
+        if (
+            location.pathname === '/intro' ||
+            location.pathname === '/login' ||
+            location.pathname === '/signup' ||
+            location.pathname.startsWith('/library') ||
+            location.pathname.startsWith('/calendar') ||
+            location.pathname.startsWith('/continuewatching')
+        ) {
+            navigate('/discover', { replace: true });
         }
         previousAuthRef.current = profile.auth;
     }, [location.pathname, profile.auth]);

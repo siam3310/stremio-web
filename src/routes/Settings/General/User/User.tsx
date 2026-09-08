@@ -1,7 +1,5 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useCore } from 'stremio/core';
-import { Link } from '../../components';
 import styles from './User.less';
 
 type Props = {
@@ -10,7 +8,6 @@ type Props = {
 
 const User = ({ profile }: Props) => {
     const { t } = useTranslation();
-    const core = useCore();
 
     const avatar = useMemo(() => (
         !profile.auth ?
@@ -22,15 +19,6 @@ const User = ({ profile }: Props) => {
                 `url('${require('/assets/images/default_avatar.png')}')`
     ), [profile.auth]);
 
-    const onLogout = useCallback(() => {
-        core.transport.dispatch({
-            action: 'Ctx',
-            args: {
-                action: 'Logout'
-            }
-        });
-    }, []);
-
     return (
         <div className={styles['user']}>
             <div className={styles['user-info-content']}>
@@ -39,24 +27,11 @@ const User = ({ profile }: Props) => {
                     style={{ backgroundImage: avatar }}
                 />
                 <div className={styles['email-logout-container']}>
-                    <div className={styles['email-label-container']} title={profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}>
+                    <div className={styles['email-label-container']} title={t('ANONYMOUS_USER')}>
                         <div className={styles['email-label']}>
-                            {profile.auth === null ? t('ANONYMOUS_USER') : profile.auth.user.email}
+                            {t('ANONYMOUS_USER')}
                         </div>
                     </div>
-                    {
-                        profile.auth !== null ?
-                            <Link
-                                label={t('LOG_OUT')}
-                                onClick={onLogout}
-                            />
-                            :
-                            <Link
-                                label={`${t('LOG_IN')} / ${t('SIGN_UP')}`}
-                                href={'#/intro'}
-                                target={'_self'}
-                            />
-                    }
                 </div>
             </div>
         </div>

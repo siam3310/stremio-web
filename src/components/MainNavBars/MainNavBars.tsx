@@ -9,8 +9,6 @@ import styles from './MainNavBars.less';
 const TABS = [
     { id: 'board', label: 'Board', icon: 'home', href: '/' },
     { id: 'discover', label: 'Discover', icon: 'discover', href: '/discover' },
-    { id: 'library', label: 'Library', icon: 'library', href: '/library' },
-    { id: 'calendar', label: 'Calendar', icon: 'calendar', href: '/calendar' },
     { id: 'addons', label: 'ADDONS', icon: 'addons', href: '/addons' },
     { id: 'settings', label: 'SETTINGS', icon: 'settings', href: '/settings' },
 ];
@@ -26,7 +24,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
     const navRef = React.useRef(null);
     const contentRef = React.useRef(null);
 
-    const navRoute = route === 'continue_watching' ? 'library' : (route ?? '');
+    const navRoute = (route === 'continue_watching' || route === 'library' || route === 'calendar') ? 'discover' : (route ?? '');
     useContentGamepadNavigation(contentRef, navRoute);
     useVerticalNavGamepadNavigation(navRef, navRoute);
 
@@ -38,7 +36,7 @@ const MainNavBars = memo(({ className, route, query, children }: Props) => {
                 query={query}
                 backButton={false}
                 searchBar={true}
-                fullscreenButton={true}
+                fullscreenButton={false}
                 navMenu={true}
             />
             <VerticalNavBar

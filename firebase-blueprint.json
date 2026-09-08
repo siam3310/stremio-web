@@ -1,0 +1,46 @@
+{
+  "entities": {
+    "Addon": {
+      "title": "Addon",
+      "description": "A Stremio add-on configuration managed in Firestore",
+      "type": "object",
+      "properties": {
+        "transportUrl": {
+          "type": "string",
+          "description": "The URL to the add-on manifest.json"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the add-on"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version of the add-on"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the add-on"
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the add-on is active and enabled"
+        },
+        "manifest": {
+          "type": "object",
+          "description": "Cached or parsed manifest representation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last modification"
+        }
+      },
+      "required": ["transportUrl", "name"]
+    }
+  },
+  "firestore": {
+    "/addons/{addonId}": {
+      "schema": "Addon",
+      "description": "Collection of Stremio add-ons managed via Firebase"
+    }
+  }
+}

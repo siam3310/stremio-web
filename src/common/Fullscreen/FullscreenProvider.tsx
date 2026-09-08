@@ -12,9 +12,6 @@ type Props = {
     children: React.ReactNode,
 };
 
-const hasWebkitFullscreen = typeof HTMLVideoElement !== 'undefined' &&
-    typeof HTMLVideoElement.prototype.webkitEnterFullscreen === 'function';
-
 const FullscreenProvider = ({ children }: Props) => {
     const { shell } = usePlatform();
     const [settings] = useSettings();
@@ -33,30 +30,94 @@ const FullscreenProvider = ({ children }: Props) => {
         setHasVideoElement(el !== null);
     }, []);
 
-    const supported = shell.active || document.fullscreenEnabled === true || (hasVideoElement && hasWebkitFullscreen);
+    const supported = true;
 
     const requestFullscreen = useCallback(async () => {
         if (shell.active) {
             shell.send('win-set-visibility', { fullscreen: true });
-        } else if (document.fullscreenEnabled) {
-            try {
-                await document.documentElement.requestFullscreen();
-            } catch (err) {
-                console.error('Error enabling fullscreen', err);
-            }
-        } else if (videoElementRef.current && hasWebkitFullscreen) {
-            (videoElementRef.current as any).webkitEnterFullscreen();
+            return;
         }
+
+        const docEl = document.documentElement as any;
+        let entered = false;
+
+        if (document.fullscreenEnabled || docEl.webkitRequestFullscreen || docEl.mozRequestFullScreen || docEl.msRequestFullscreen) {
+            try {
+                if (docEl.requestFullscreen) {
+                    await docEl.requestFullscreen();
+                    entered = true;
+                } else if (docEl.webkitRequestFullscreen) {
+                    await docEl.webkitRequestFullscreen();
+                    entered = true;
+                } else if (docEl.mozRequestFullScreen) {
+                    await docEl.mozRequestFullScreen();
+                    entered = true;
+                } else if (docEl.msRequestFullscreen) {
+                    await docEl.msRequestFullscreen();
+                    entered = true;
+                }
+            } catch (err) {
+                console.warn('Native requestFullscreen failed, attempting video element fallback:', err);
+            }
+        }
+
+        if (!entered && videoElementRef.current) {
+            const vid = videoElementRef.current as any;
+            if (typeof vid.webkitEnterFullscreen === 'function') {
+                try {
+                    vid.webkitEnterFullscreen();
+                    entered = true;
+                } catch (err) {
+                    console.warn('Video webkitEnterFullscreen failed:', err);
+                }
+            } else if (typeof vid.requestFullscreen === 'function') {
+                try {
+                    await vid.requestFullscreen();
+                    entered = true;
+                } catch (err) {
+                    console.warn('Video requestFullscreen failed:', err);
+                }
+            }
+        }
+
+        // Always update state and apply pseudo-fullscreen class as guarantee
+        document.documentElement.classList.add('fullscreen-mode');
+        setFullscreen(true);
     }, [shell]);
 
     const exitFullscreen = useCallback(() => {
         if (shell.active) {
             shell.send('win-set-visibility', { fullscreen: false });
-        } else if (document.fullscreenElement === document.documentElement) {
-            document.exitFullscreen();
-        } else if (videoElementRef.current && (videoElementRef.current as any).webkitDisplayingFullscreen) {
-            (videoElementRef.current as any).webkitExitFullscreen();
+            return;
         }
+
+        const doc = document as any;
+        if (doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement) {
+            try {
+                if (doc.exitFullscreen) {
+                    doc.exitFullscreen();
+                } else if (doc.webkitExitFullscreen) {
+                    doc.webkitExitFullscreen();
+                } else if (doc.mozCancelFullScreen) {
+                    doc.mozCancelFullScreen();
+                } else if (doc.msExitFullscreen) {
+                    doc.msExitFullscreen();
+                }
+            } catch (err) {
+                console.warn('Native exitFullscreen error:', err);
+            }
+        }
+
+        if (videoElementRef.current && (videoElementRef.current as any).webkitDisplayingFullscreen) {
+            try {
+                (videoElementRef.current as any).webkitExitFullscreen();
+            } catch (err) {
+                console.warn('Video webkitExitFullscreen error:', err);
+            }
+        }
+
+        document.documentElement.classList.remove('fullscreen-mode');
+        setFullscreen(false);
     }, [shell]);
 
     const toggleFullscreen = useCallback(() => {

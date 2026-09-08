@@ -23,7 +23,7 @@ const THREAD_LOADER = {
     loader: 'thread-loader',
     options: {
         name: 'shared-pool',
-        workers: os.cpus().length,
+        workers: Math.min(4, Math.max(1, (os.cpus() || []).length || 2)),
     },
 };
 
@@ -40,7 +40,7 @@ threadLoader.warmup(
 
 module.exports = (env, argv) => ({
     mode: argv.mode,
-    devtool: argv.mode === 'production' ? 'source-map' : 'eval-source-map',
+    devtool: argv.mode === 'production' ? 'source-map' : 'eval-cheap-module-source-map',
     entry: {
         main: './src/index.js',
         worker: './node_modules/@stremio/stremio-core-web/worker.js'
@@ -200,7 +200,7 @@ module.exports = (env, argv) => ({
         },
     },
     optimization: {
-        minimize: true,
+        minimize: argv.mode === 'production',
         minimizer: [
             new TerserPlugin({
                 test: /\.js$/,
@@ -219,7 +219,6 @@ module.exports = (env, argv) => ({
         ]
     },
     plugins: [
-        new webpack.ProgressPlugin(),
         new webpack.EnvironmentPlugin({
             ...env,
             SERVICE_WORKER_DISABLED: false,
@@ -251,7 +250,7 @@ module.exports = (env, argv) => ({
         new HtmlWebPackPlugin({
             template: './src/index.html',
             inject: false,
-            scriptLoading: 'blocking',
+            scriptLoading: 'defer',
             faviconsPath: 'favicons',
             imagesPath: 'images',
         }),
